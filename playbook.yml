@@ -1,0 +1,89 @@
+---
+- hosts: all
+  tasks:
+
+    - name: install some dependencies
+      yum: name={{ item }} state=latest
+      with_items:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+        - epel-release
+      become: true
+
+    - name: Add Docker Official yum repo
+      yum_repository:
+        name: docker-ce
+        description: add docker-ce repo
+        baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+        gpgcheck: no
+        state: present
+      become: true
+
+    - name: Install more dependencies and python-pip
+      yum: name={{ item }} state=latest
+      with_items:
+        - python-pip
+        - docker-ce
+      become: true
+    
+    - name: Install docker api for ansible
+      pip: name={{item}} state=present
+      with_items:
+        - docker-py
+      become: true
+
+    - name: Check if Docker config file /etc/docker/daemon.json
+      stat: path=/etc/init.d/docker
+      register: service_status
+
+    - name: create dir /etc/docker
+      file: 
+        path: "{{ item }}"
+        state: directory
+        owner: root 
+        group: root
+        mode: 0700
+      with_items:
+        - /etc/docker
+      #when: service_status.stat.exists == False
+      become: true
+
+    - name: create docker virtual network
+      shell: echo '{ "'bip'" ':' "192.168.20.1/22" }' > /etc/docker/daemon.json
+      when: service_status.stat.exists == False
+      become: true
+
+    - name: enable service docker and ensure it is not masked
+      systemd:
+        name: docker
+        enabled: yes
+        masked: no
+      become: true
+
+    - name: start docker-ce service
+      systemd: name=docker state=started
+      become: true
+
+    - name: run/pull rancher-server
+      docker:
+        name: rancher-server
+        image: rancher/server:preview
+        state: reloaded
+        pull: always
+        restart_policy: unless-stopped
+        volumes:
+        - "/var/lib/mysql:/var/lib/mysql"
+        ports:
+        - "8080:8080"
+      when:
+        - service_status.stat.exists == False
+        - inventory_hostname == "machine1"     
+      become: true 
+
+    - name: Update /etc/hosts from inventory
+      lineinfile: dest=/etc/hosts regexp='.*{{item}}$' line='{{hostvars[item].ansible_eth1.ipv4.address}} {{item}}' state=present
+      with_items: '{{groups.all}}'
+      tags:
+        - hosts
+      become: true
