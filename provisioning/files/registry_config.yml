@@ -1,0 +1,43 @@
+version: 0.1
+log:
+  accesslog:
+    disabled: true
+  level: debug
+  formatter: text
+  fields:
+    service: registry
+    environment: staging
+
+storage:
+  filesystem:
+    rootdirectory: /var/lib/registry
+    maxthreads: 100
+  delete:
+    enabled: false
+  redirect:
+    disable: false
+  cache:
+    blobdescriptor: inmemory
+  maintenance:
+    uploadpurging:
+      enabled: true
+      age: 168h
+      interval: 24h
+      dryrun: false
+    readonly:
+      enabled: false
+
+http:
+  addr: 0.0.0.0:443
+  host: https://registry.itoa.servicos.bb.com.br:443
+  relativeurls: false
+  tls:
+    certificate: /certs/itoa.crt
+    key: /certs/itoa.key
+  headers:
+    X-Content-Type-Options: [nosniff]
+  http2:
+    disabled: false
+
+#proxy:
+#  remoteurl: https://registry-1.docker.io

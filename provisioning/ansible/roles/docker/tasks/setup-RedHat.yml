@@ -1,0 +1,37 @@
+---
+- name: Ensure old versions of Docker are not installed.
+  package:
+    name: '{{ item }}'
+    state: absent
+  with_items:
+    - docker
+    - docker-common
+    - docker-engine
+
+- name: Install some dependencies for Docker install.
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+    - epel-release
+  become: true
+  
+- name: Install more PIP.
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - python-pip
+  become: true
+
+- name: Install Docker Python Api for Ansible
+  pip: name={{item}} state=present
+  with_items:
+    - docker-py
+  state: present
+  become: true  
+
+

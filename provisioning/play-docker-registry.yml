@@ -1,0 +1,42 @@
+- hosts: machine1
+  tasks:
+
+  - name: create self-signed SSL cert
+    command: openssl req -newkey rsa:2048 -nodes -x509 -subj "/C=BR/ST=Distrito Federal/L=Brasilia/O=BB/CN=*.itoa.servicos.bb.com.br" -days 1825 -keyout /etc/ssl/certs/itoa.key -out /etc/ssl/certs/itoa.crt
+    become: true
+
+  - name: create user and ssh-key
+    user:
+      name: vagrant
+      generate_ssh_key: yes
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa
+
+  - name: retrieve private key
+    shell: cat ~/.ssh/id_rsa
+    register: master_private_key
+    changed_when: false
+
+  - name: retrieve public key
+    shell: cat ~/.ssh/id_rsa.pub
+    register: master_public_key
+    changed_when: false
+
+- hosts: all
+  tasks:
+
+    - name: add master public key to slaves authorized_keys
+      authorized_key:
+        user: vagrant
+        key: "{{ hostvars['machine1'].master_public_key.stdout }}"
+
+    - name: add master public key to slaves
+      shell: echo "{{ hostvars['machine1'].master_public_key.stdout }}" > ~/.ssh/id_rsa.pub
+
+    - name: add master private key to slaves
+      shell: echo "{{ hostvars['machine1'].master_private_key.stdout }}" > ~/.ssh/id_rsa
+
+    - name: change mode permission
+      file:
+        path: ~/.ssh/id_rsa
+        mode: 0600

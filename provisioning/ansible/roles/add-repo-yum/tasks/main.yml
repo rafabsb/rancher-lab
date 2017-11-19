@@ -1,0 +1,3 @@
+---
+- import_tasks: addRepoClients.yml
+  when: ansible_os_family == 'RedHat'

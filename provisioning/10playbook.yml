@@ -1,0 +1,136 @@
+---
+- name: run the playbook tasks on the localhost
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  tasks:
+
+  - name: create self-signed ITOA SSL certs
+    command: openssl req -newkey rsa:2048 -nodes -x509 -subj "/C=BR/ST=Distrito Federal/L=Brasilia/O=BB/CN=*.itoa.servicos.bb.com.br" -days 3650 -keyout itoa.key -out itoa.crt
+#    become: true
+
+- hosts: all
+  tasks:
+
+  - name: Include vars.
+    include_vars:
+      file: files/vars.yml
+      name: var
+
+  - name: create dir /etc/docker
+    file: 
+      path: "{{ item }}"
+      state: directory
+      owner: root 
+      group: root
+      mode: 0700
+    with_items:
+      - /etc/docker/certs.d/{{var.registry}}
+    become: true
+
+  - name: Copy cert itoa.key
+    copy:
+      src: itoa.key
+      dest: /etc/docker/certs.d/itoa.key
+    state: present
+    become: true
+
+  - name: Copy cert itoa.crt to Default linux repo
+    copy:
+      src: itoa.crt
+      dest: /etc/pki/ca-trust/source/anchors/itoa.crt
+    state: present
+    become: true
+
+  - name: Copy cert itoa.crt to Default linux repo
+    copy:
+      src: itoa.crt
+      dest: /etc/docker/certs.d/itoa.crt
+    state: present
+    become: true
+
+  - name: Update Linux default repo with certs
+    command: /bin/update-ca-trust
+    become: true
+
+  - name: Copy cert itoa.crt to itoa domain folder
+    copy:
+      src: itoa.crt
+      dest: /etc/docker/certs.d/{{var.registry}}/ca.crt
+    state: present
+    become: true
+
+  - name: Copy registry_config.yml
+    copy:
+      src: docker_install/registry_config.yml
+      dest: /etc/docker/registry_config.yml
+    state: present
+    become: true
+
+  - name: Copy mirror_config.yml
+    copy:
+      src: docker_install/mirror_config.yml
+      dest: /etc/docker/mirror_config.yml
+    state: present
+    become: true
+
+  - name: Update /etc/hosts to include registry e mirror
+    lineinfile: dest=/etc/hosts line='{{var.masterip}} {{var.registry}} {{var.mirror}} {{var.masterurl}}' state=present
+    become: true
+
+  - name: Update /etc/hosts from inventory
+    lineinfile: dest=/etc/hosts regexp='.*{{item}}$' line='{{hostvars[item].ansible_eth1.ipv4.address}} {{item}}' state=present
+    with_items: '{{groups.all}}'
+    tags:
+      - hosts
+    become: true
+
+  - name: Copy docker.rpm
+    copy:
+      src: docker_install/{{var.dockerrpm}}
+      dest: /tmp/{{var.dockerrpm}}
+    state: present
+    become: true
+
+  - name: install some dependencies for Docker install
+    yum: name={{ item }} state=latest
+    with_items:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - epel-release
+    become: true
+
+  - name: Install more dependencies and python-pip
+    yum: name={{ item }} state=latest
+    with_items:
+      - python-pip
+    become: true
+
+  - name: Install docker api for ansible
+    pip: name={{item}} state=present
+    with_items:
+      - docker-py
+    become: true
+
+  - name: config docker virtual network
+    shell: echo '{ "'bip'" ':' "{{var.dockernetwork}}"',' "'registry-mirrors'" ':' '['"'https://{{var.registry}}:{{var.mirrorport}}'"']' }' > /etc/docker/daemon.json
+    become: true
+
+  - name: Install Docker
+    shell: yum --nogpgcheck localinstall /tmp/{{var.dockerrpm}} -y
+    become: true
+
+  - name: enable service docker and ensure it is not masked
+    systemd:
+      name: docker
+      enabled: yes
+      masked: no
+    become: true
+
+  - name: Ensures /data/docker/ dir exists
+    file: path=/data/docker/ state=directory
+    become: true
+
+
+

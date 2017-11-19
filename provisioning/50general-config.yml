@@ -1,0 +1,27 @@
+- hosts: worker
+  tasks:
+
+  - name: Include vars.
+    include_vars:
+      file: files/vars.yml
+      name: var
+
+#  - name: Update /etc/hosts to include registry e mirror
+#    lineinfile: dest=/etc/hosts line='{{var.masterip}} {{var.registry}} {{var.mirror}} {{var.masterurl}}' state=present
+#    become: true
+
+#  - name: Start local Docker Registry
+#    docker_container:
+#      name: registry
+#      image: registry:2
+#      restart_policy: always
+#        - "/etc/docker/certs.d:/certs"
+#        - "/data/docker/registry:/var/lib/registry"
+#        - REGISTRY_HTTP_TLS_CERTIFICATE:/certs/itoa.crt
+#      ports:
+#      - "443:443"
+#    become: true#
+
+  - name: start rancher clients
+    command: docker run --rm --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/rancher:/var/lib/rancher rancher/agent:v1.2.6 http://192.168.56.101:8080/v1/scripts/6C6DB78E9AEC2CA7324A:1483142400000:0delfm9gVOaxGC8KaE269RmkQUw
+    become: true

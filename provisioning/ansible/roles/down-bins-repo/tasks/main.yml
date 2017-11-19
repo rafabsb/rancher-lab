@@ -1,0 +1,3 @@
+---
+- import_tasks: downBinsYum.yml
+  when: ansible_os_family == 'RedHat'

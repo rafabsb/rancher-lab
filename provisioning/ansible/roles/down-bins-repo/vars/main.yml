@@ -1,0 +1,41 @@
+repoYumDir: '/var/www/html/itoa/repo/rhel7'
+user: 'vagrant'
+repoHost: 'machine1'
+
+dockerUrl: 'https://download.docker.com/linux/centos/7/x86_64/stable/Packages/'
+dockerBin: [
+   {
+      "nameUrl":"docker-ce-17.06.2.ce-1.el7.centos.x86_64.rpm",
+      "fileName":"docker-ce-17.06.2.ce-1.el7.centos.x86_64.rpm"
+   }
+]
+
+elasticsearchUrl: 'https://artifacts.elastic.co/downloads/'
+elasticBin: [
+   {
+      "nameUrl":"elasticsearch/elasticsearch-6.0.0.rpm",
+      "fileName":"elasticsearch-6.0.0.rpm"
+   },
+   {
+      "nameUrl":"kibana/kibana-6.0.0-x86_64.rpm",
+      "fileName":"kibana-6.0.0-x86_64.rpm"
+   },
+   {
+      "nameUrl":"logstash/logstash-6.0.0.rpm",
+      "fileName":"logstash-6.0.0.rpm"
+   },
+   {
+      "nameUrl":"beats/filebeat/filebeat-6.0.0-x86_64.rpm",
+      "fileName":"filebeat-6.0.0-x86_64.rpm"
+   },
+   {
+      "nameUrl":"beats/metricbeat/metricbeat-6.0.0-x86_64.rpm",
+      "fileName":"metricbeat-6.0.0-x86_64.rpm"
+   }
+]
+
+sparkUrl: ''
+sparkBin: ''
+
+hadoopUrl: ''
+hadoopBin: ''

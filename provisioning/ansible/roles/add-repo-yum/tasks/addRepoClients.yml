@@ -1,0 +1,11 @@
+---
+- name: Add repository
+  yum_repository:
+    name: itoa-repo
+    description: Repositorio ITOA
+    file: itoa-repo
+    baseurl: http://{{ repoUrl }}{{ repoUri }}
+    gpgcheck: no
+    state: present
+    enabled: yes
+  become: true

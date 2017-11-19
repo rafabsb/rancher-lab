@@ -1,0 +1,3 @@
+- hosts: '{{ repoHost }}'
+  roles:
+    - down-bins-repo
