@@ -1,22 +1,21 @@
 ---
-
 - name: Download Spark to itoa webdav folder
   get_url:
-    url: '{{ elasticsearchUrl }}{{ item.nameUrl }}'
-    dest: '{{ repoYumDir }}/{{ item.fileName }}'
+    url: '{{ sparkUrl }}{{ item.nameUrl }}'
+    dest: '{{ repoDirWebdav }}/{{ item.fileName }}'
     mode: 0775
   with_items:
-    - '{{ elasticBin }}'
+    - '{{ sparkBin }}'
   #become: true
   state: file
 
-- name: Download Hadoop  to itoa webdav folder
+- name: Download Hadoop to itoa webdav folder
   get_url:
-    url: '{{ dockerUrl }}{{ item.nameUrl }}'
-    dest: '{{ repoYumDir }}/{{ item.fileName }}'
+    url: '{{ hadoopUrl }}{{ item.nameUrl }}'
+    dest: '{{ repoDirWebdav }}/{{ item.fileName }}'
     mode: 0775
   with_items:
-    - '{{ dockerBin }}'
+    - '{{ hadoopBin }}'
   #become: true
   state: file
 

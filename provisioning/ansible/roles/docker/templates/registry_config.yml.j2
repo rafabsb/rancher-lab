@@ -1,0 +1,40 @@
+version: 0.1
+log:
+  accesslog:
+    disabled: true
+  level: {{ logLevel }}
+  formatter: text
+  fields:
+    service: registry
+    environment: staging
+
+storage:
+  filesystem:
+    rootdirectory: /var/lib/registry
+    maxthreads: 100
+  delete:
+    enabled: false
+  redirect:
+    disable: false
+  cache:
+    blobdescriptor: inmemory
+  maintenance:
+    uploadpurging:
+      enabled: true
+      age: {{ chacheAge }}
+      interval: 24h
+      dryrun: false
+    readonly:
+      enabled: false
+
+http:
+  addr: 0.0.0.0:80
+  host: http://{{ registryHost }}
+  relativeurls: false
+  headers:
+    X-Content-Type-Options: [nosniff]
+  http2:
+    disabled: false
+
+#proxy:
+#  remoteurl: https://registry-1.docker.io

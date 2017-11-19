@@ -1,25 +1,5 @@
 ---
-- name: Ensure old versions of Docker are not installed.
-  package:
-    name: '{{ item }}'
-    state: absent
-  with_items:
-    - docker
-    - docker-common
-    - docker-engine
-
-- name: Install some dependencies for Docker install.
-  package:
-    name: '{{ item }}'
-    state: present
-  with_items:
-    - yum-utils
-    - device-mapper-persistent-data
-    - lvm2
-    - epel-release
-  become: true
-  
-- name: Install more PIP.
+- name: Install PIP.
   package:
     name: '{{ item }}'
     state: present
@@ -34,4 +14,13 @@
   state: present
   become: true  
 
+- name: Update /etc/hosts to include registry, mirror, master
+  lineinfile: dest=/etc/hosts line='{{ masterip }} {{ registryHost }} {{ mirrorHost }} {{ masterHost }}' state=present
+  become: true
 
+#- name: Update /etc/hosts from inventory
+#  lineinfile: dest=/etc/hosts regexp='.*{{item}}$' line='{{hostvars[item].ansible_eth1.ipv4.address}} {{item}}' state=present
+#  with_items: '{{groups.all}}'
+#  tags:
+#    - hosts
+#  become: true

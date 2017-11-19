@@ -1,4 +1,5 @@
 repoYumDir: '/var/www/html/itoa/repo/rhel7'
+repoDirWebdav: '/var/www/html/itoa/repo/webdav'
 user: 'vagrant'
 repoHost: 'machine1'
 
@@ -34,8 +35,18 @@ elasticBin: [
    }
 ]
 
-sparkUrl: ''
-sparkBin: ''
+sparkUrl: 'http://www-us.apache.org/dist/spark/spark-2.2.0/'
+sparkBin: [
+   {
+      "nameUrl":"spark-2.2.0-bin-hadoop2.7.tgz",
+      "fileName":"spark-2.2.0-bin-hadoop2.7.tgz"
+   }
+]
 
-hadoopUrl: ''
-hadoopBin: ''
+hadoopUrl: 'http://www-us.apache.org/dist/hadoop/common/hadoop-2.7.4/'
+hadoopBin: [
+   {
+      "nameUrl":"hadoop-2.7.4.tar.gz",
+      "fileName":"hadoop-2.7.4.tar.gz"
+   }
+]

@@ -1,0 +1,43 @@
+---
+- name: create dir /etc/docker... & /data/docker
+  file: 
+    path: "{{ item }}"
+    state: directory
+    owner: root 
+    group: root
+    mode: 0700
+  with_items:
+    - '{{ dockerConfDir }}'
+    - '{{ dockerDataDir }}'
+  become: true
+
+- name: enable service docker and ensure it is not masked
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no
+  become: true
+
+- template:
+    src: mirror_config.yml.j2
+    dest: '{{   dockerConfDir }}mirror_config.yml'
+    owner: root
+    mode: 0644
+    force: yes
+  become: true
+
+- template:
+    src: registry_config.yml.j2
+    dest: '{{ dockerConfDir }}registry_config.yml'
+    owner: root
+    mode: 0644
+    force: yes
+  become: true
+
+- template:
+    src: daemon.json.j2
+    dest: '{{ dockerConfDir }}daemon.json'
+    owner: root
+    mode: 0644
+    force: yes
+  become: true
