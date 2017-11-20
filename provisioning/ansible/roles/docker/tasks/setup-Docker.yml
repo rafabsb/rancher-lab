@@ -20,7 +20,7 @@
 
 - template:
     src: mirror_config.yml.j2
-    dest: '{{   dockerConfDir }}mirror_config.yml'
+    dest: '{{ dockerConfDir }}mirror_config.yml'
     owner: root
     mode: 0644
     force: yes

@@ -1,7 +1,7 @@
 repoYumDir: '/var/www/html/itoa/repo/rhel7'
 repoDirWebdav: '/var/www/html/itoa/repo/webdav'
 user: 'vagrant'
-repoHost: 'machine1'
+hosts: 'machine1'
 
 dockerUrl: 'https://download.docker.com/linux/centos/7/x86_64/stable/Packages/'
 dockerBin: [

@@ -1,3 +1,3 @@
-- hosts: '{{ repoHost }}'
+- hosts: '{{ hosts }}'
   roles:
     - create-repos

@@ -1,0 +1,6 @@
+---
+- import_tasks: start-docker.yml
+  when: ansible_os_family == 'RedHat'
+
+- import_tasks: rancher-master.yml
+  when: ansible_os_family == 'RedHat'

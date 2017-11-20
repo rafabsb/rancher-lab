@@ -1,0 +1,30 @@
+---
+- name: start docker-ce service
+  systemd: 
+    name: docker
+    state: started
+  become: true
+
+- name: Start local Docker Registry
+  docker_container:
+    name: registry
+    image: registry:{{registryVersion}}
+    restart_policy: always
+    volumes:
+      - "{{dockerConfDir}}registry_config.yml:/etc/docker/registry/config.yml"
+      - "{{dockerDataDir}}registry:/var/lib/registry"
+    ports:
+    - '{{registryPort}}:80'
+  become: true
+
+- name: Start local Docker Mirror
+  docker_container:
+    name: mirror
+    image: registry:{{registryVersion}}
+    restart_policy: always
+    volumes:
+      - "{{dockerConfDir}}mirror_config.yml:/etc/docker/registry/config.yml"
+      - "{{dockerDataDir}}registry:/var/lib/registry"
+    ports:
+    - '{{mirrorPort}}:80'
+  become: true

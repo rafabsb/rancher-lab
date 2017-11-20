@@ -1,0 +1,4 @@
+rancherWorkerTag: 'stable'
+rancherWorkerDataDir: ''
+rancherClientPort: ''
+hosts: 'worker'
