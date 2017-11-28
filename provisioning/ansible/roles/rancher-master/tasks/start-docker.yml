@@ -1,6 +1,0 @@
----
-- name: start docker-ce service
-  systemd: 
-    name: docker
-    state: started
-  become: true

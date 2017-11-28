@@ -1,4 +1,0 @@
-repoDirYum: '/var/www/html/itoa/repo/rhel7'
-repoDirWebdav: '/var/www/html/itoa/repo/webdav'
-user: 'vagrant'
-hosts: 'machine1'

@@ -1,4 +1,0 @@
-rancherServerTag: 'stable'
-rancherServerDataDir: '/data/docker/rancher/var/lib/mysql'
-rancherServerPort: '8080'
-hosts: 'master'

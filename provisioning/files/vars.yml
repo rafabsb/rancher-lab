@@ -1,8 +1,0 @@
-createuser: 'itoausr'
-registry: 'registry.itoa.servicos.bb.com.br'
-mirror: 'mirror.itoa.servicos.bb.com.br'
-dockernetwork: '192.168.20.1/22'
-dockerrpm: 'docker-ce-17.06.2.ce-1.el7.centos.x86_64.rpm'
-masterip: '192.168.56.101'
-mirrorport: '5555'
-masterurl: 'master.itoa.servicos.bb.com.br'

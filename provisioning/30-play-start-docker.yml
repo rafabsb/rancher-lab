@@ -1,6 +1,0 @@
-- hosts: all
-  tasks:
-
-  - name: start docker-ce service
-    systemd: name=docker state=started
-    become: true

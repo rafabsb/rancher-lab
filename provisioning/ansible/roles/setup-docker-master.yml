@@ -1,3 +1,0 @@
-- hosts: '{{ dockerMasterHost }}'
-  roles:
-    - setup-docker-master

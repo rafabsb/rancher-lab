@@ -1,3 +1,0 @@
----
-- import_tasks: setup-docker-master.yml
-  when: ansible_os_family == 'RedHat'
