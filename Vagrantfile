@@ -3,11 +3,13 @@ Vagrant.configure("2") do |config|
   config.vm.box = "centos/7"
   config.vm.box_version = "1610.01"
 
-  config.vm.provision :shell, path: "bootstrap.sh"
+  #config.vm.provision :shell, path: "bootstrap.sh"
   config.landrush.enabled = true
-  #config.landrush.host 'all.rafabsb.me', '192.168.56.102'
+  config.landrush.host 'all.rafabsb.me', '192.168.56.102'
+  
+
   config.landrush.tld = 'rafabsb.me'
-  config.landrush.host_interface = 'eth1'
+  #config.landrush.host_interface = 'eth1'
 
   N = 4
   (1..N).each do |machine_id|
@@ -17,7 +19,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "machine#{machine_id}" do |machine|
       machine.vm.hostname = "m#{machine_id}.rafabsb.me"
       machine.vm.network "private_network", ip: "192.168.56.10#{machine_id}"
-      #machine.landrush.host "machine#{machine_id}.lab.io", "192.168.56.10#{machine_id}"
+      machine.landrush.host "machine#{machine_id}.rafabsb.me", "192.168.56.10#{machine_id}"
 
 
 
